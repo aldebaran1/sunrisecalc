@@ -16,11 +16,15 @@ import ephem
 import datetime
 from dateutil.parser import parse
 
-def getsunriseTimeUTC(lat, lon, alt, date=None, pressure=None, horizon=None):
+def getsunriseTimeUTC(lat=40, lon=-80, alt=0, date=None, pressure=None, horizon=None):
+    """
+    By default horizon == 0, namely we compute a sunrise time NOT dawn.
+    'alt' argument must be set in kilometers.
+    'pressure' argument is in milibars [mBar]
+    """
     L = ephem.Observer()
     L.lon = str(lon)
     L.lat = str(lat)
-    L.elevation = alt*1e3
     if pressure is not None: L.pressure = pressure
     if horizon is not None: L.horizon = str(horizon)
 
@@ -28,7 +32,7 @@ def getsunriseTimeUTC(lat, lon, alt, date=None, pressure=None, horizon=None):
         date = datetime.date.today()
     elif isinstance(date, str):
         date = parse(date)
-    elif isinstance(date,datetime):
+    elif isinstance(date,datetime.datetime):
         pass
     else:
         raise TypeError('time must be datetime object')
@@ -48,6 +52,8 @@ def getsunriseTimeUTC(lat, lon, alt, date=None, pressure=None, horizon=None):
 
     print('Sunrise time at ground level UTC:', sunrise.isoformat()[:-7])
 # %% Geometry: Spherical Earth approximation
+# CAUTION: This is a sloppy approximantion. It assumes geoid=sphere and rotation
+# of the Earth = 15deg/hour
     Re = 6378.0 # km
     h = alt # km
     theta = degrees(acos(Re/(Re+h)))
