@@ -72,8 +72,8 @@ if __name__ == '__main__':
     p.add_argument('lon',type=float)
     p.add_argument('alt_km',help=' altitude (km)',type=float)
     p.add_argument('date',nargs='?')
-    p.add_argument('-pressure')
-    p.add_argument('-horizon')
+    p.add_argument('-p', '--pressure')
+    p.add_argument('--horizon')
     p = p.parse_args()
 
     tsr = getsunriseTimeUTC(p.lat, p.lon, p.alt_km, p.date, p.pressure, p.horizon)
